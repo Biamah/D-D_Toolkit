@@ -47,8 +47,8 @@ export interface SavedSheet {
 export interface CreatureApiModel {
   key?: string;
   name?: string;
-  size?: string;
-  type?: string;
+  size?: string | { name?: string; key?: string };
+  type?: string | { name?: string; key?: string };
   alignment?: string;
   armor_class?: number | string;
   hit_points?: number;

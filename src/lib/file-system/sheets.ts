@@ -1,4 +1,4 @@
-import type { SavedSheet } from "../types";
+import type { SavedSheet } from "../../types";
 
 export function downloadSheet(sheet: SavedSheet) {
   const blob = new Blob([JSON.stringify(sheet, null, 2)], {
@@ -35,8 +35,7 @@ export async function readLibrary(
   for await (const entry of handle.values()) {
     if (entry.kind !== "file" || !entry.name.endsWith(".a5e")) continue;
     try {
-      const file = await entry.getFile();
-      sheets.push(await importSheet(file));
+      sheets.push(await importSheet(await entry.getFile()));
     } catch {}
   }
   return sheets;

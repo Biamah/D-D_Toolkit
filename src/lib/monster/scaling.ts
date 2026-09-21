@@ -1,4 +1,4 @@
-import type { Difficulty, Monster } from "../types";
+import type { Difficulty, Monster } from "../../types";
 
 const difficultyFactor: Record<Difficulty, number> = {
   Easy: 0.78,
