@@ -1,6 +1,7 @@
 import { FilePlus2, FolderOpen, Heart, Search, Upload } from "lucide-react";
 import { EmptyPreview } from "../../ui/EmptyPreview";
 import type { Monster, Npc, SavedSheet } from "../../../types";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export function LibraryView({
   saved,
@@ -19,6 +20,7 @@ export function LibraryView({
   setQuery: (value: string) => void;
   importSavedSheet: (file: File) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const items = saved.filter((sheet) =>
     sheet.metadata.title.toLowerCase().includes(query.toLowerCase()),
   );
@@ -30,15 +32,15 @@ export function LibraryView({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search your sheets..."
+            placeholder={t("library.searchPlaceholder")}
           />
         </div>
         <button className="secondary" onClick={openLibrary}>
           <FolderOpen size={16} />{" "}
-          {directory ? "Library connected" : "Open local folder"}
+          {directory ? t("library.connected") : t("library.openFolder")}
         </button>
         <label className="secondary import-button">
-          <Upload size={16} /> Import .a5e
+          <Upload size={16} /> {t("library.import")}
           <input
             type="file"
             accept=".a5e,application/json"
@@ -48,7 +50,7 @@ export function LibraryView({
               try {
                 await importSavedSheet(file);
               } catch {
-                window.alert("Este arquivo não é uma ficha .a5e válida.");
+                window.alert(t("library.invalidFile"));
               }
             }}
           />
@@ -56,26 +58,32 @@ export function LibraryView({
       </div>
       <div className="library-head">
         <div>
-          <span className="eyebrow">LOCAL COLLECTION</span>
-          <h2>{directory ? "Connected library" : "Your campaign shelf"}</h2>
+          <span className="eyebrow">{t("library.collection")}</span>
+          <h2>
+            {directory ? t("library.connectedTitle") : t("library.shelfTitle")}
+          </h2>
         </div>
-        <span className="result-count">{items.length} sheets</span>
+        <span className="result-count">
+          {t("library.sheets", { count: items.length })}
+        </span>
       </div>
       {items.length ? (
         <div className="saved-grid">
           {items.map((sheet) => (
             <article className="saved-card" key={sheet.metadata.id}>
               <span className={`saved-badge ${sheet.type}`}>
-                {sheet.type === "npc" ? "NPC" : "MONSTER"}
+                {sheet.type === "npc"
+                  ? t("library.npcBadge")
+                  : t("library.monsterBadge")}
               </span>
               <h3>{sheet.metadata.title}</h3>
               <p>
                 {sheet.type === "npc"
-                  ? `${(sheet.data as Npc).race} · level ${(sheet.data as Npc).level}`
-                  : `${(sheet.data as Monster).type} · CR ${(sheet.data as Monster).challengeRating}`}
+                  ? `${(sheet.data as Npc).race} · ${t("npc.level").toLowerCase()} ${(sheet.data as Npc).level}`
+                  : `${(sheet.data as Monster).type} · ${t("monster.cr")} ${(sheet.data as Monster).challengeRating}`}
               </p>
               <div>
-                <Heart size={15} /> <span>Saved locally</span>
+                <Heart size={15} /> <span>{t("library.savedLocally")}</span>
               </div>
             </article>
           ))}
@@ -83,8 +91,8 @@ export function LibraryView({
       ) : (
         <EmptyPreview
           icon={<FilePlus2 />}
-          title="Your shelf is quiet"
-          text="Save or import a sheet to see it here."
+          title={t("library.emptyTitle")}
+          text={t("library.emptyText")}
         />
       )}
     </section>

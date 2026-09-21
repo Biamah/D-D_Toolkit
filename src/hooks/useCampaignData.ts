@@ -14,9 +14,7 @@ export function useCampaignData(query: string) {
         setSpecies(nextSpecies);
         setMonsters(nextMonsters);
       })
-      .catch(() =>
-        setError("Não foi possível alcançar a Open5e agora. Tente novamente."),
-      )
+      .catch(() => setError("open5e"))
       .finally(() => setLoading(false));
   }, []);
 

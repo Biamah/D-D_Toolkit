@@ -11,6 +11,7 @@ import { characterLevels } from "../../../data/options";
 import { scaleMonster } from "../../../lib/monster/scaling";
 import type { Difficulty, Monster } from "../../../types";
 import { useState } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export function MonsterForge({
   monsters,
@@ -29,6 +30,7 @@ export function MonsterForge({
   setScaled: (monster: Monster | null) => void;
   onSave: (monster: Monster) => void;
 }) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<Monster | null>(null);
   const [players, setPlayers] = useState("4");
   const [level, setLevel] = useState("5");
@@ -38,11 +40,11 @@ export function MonsterForge({
       <section className="browser-panel">
         <div className="browser-head">
           <div>
-            <span className="eyebrow">OPEN5E V2 / CREATURES</span>
-            <h2>Choose your base</h2>
+            <span className="eyebrow">{t("monster.open5e")}</span>
+            <h2>{t("monster.chooseBase")}</h2>
           </div>
           <span className="result-count">
-            {loading ? "..." : `${monsters.length} found`}
+            {loading ? "..." : t("monster.found", { count: monsters.length })}
           </span>
         </div>
         <div className="search-box">
@@ -50,19 +52,19 @@ export function MonsterForge({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search creatures..."
+            placeholder={t("monster.searchPlaceholder")}
           />
         </div>
         <div className="monster-list">
           {loading ? (
             <div className="loading">
-              <LoaderCircle className="spin" /> Loading Open5e creatures
+              <LoaderCircle className="spin" /> {t("monster.loading")}
             </div>
           ) : monsters.length === 0 ? (
             <div className="loading">
               <Swords size={22} />
-              <strong>No creatures found</strong>
-              <span>Try another search or refresh the Open5e data.</span>
+              <strong>{t("monster.noResults")}</strong>
+              <span>{t("monster.noResultsText")}</span>
             </div>
           ) : (
             monsters.slice(0, 20).map((monster) => (
@@ -96,8 +98,8 @@ export function MonsterForge({
       <section className="scaling-panel">
         <div className="panel-heading">
           <div>
-            <span className="eyebrow warm">RULE ENGINE / MVP</span>
-            <h2>Balance the encounter</h2>
+            <span className="eyebrow warm">{t("monster.ruleEngine")}</span>
+            <h2>{t("monster.balance")}</h2>
           </div>
         </div>
         {selected ? (
@@ -111,14 +113,14 @@ export function MonsterForge({
                 </div>
               )}
               <div>
-                <span>BASE CREATURE</span>
+                <span>{t("monster.baseLabel")}</span>
                 <h3>{selected.name}</h3>
-                <p>Original Open5e data remains untouched.</p>
+                <p>{t("monster.originalNote")}</p>
               </div>
             </div>
             <div className="two-col">
               <label>
-                Players
+                {t("monster.players")}
                 <select
                   value={players}
                   onChange={(event) => setPlayers(event.target.value)}
@@ -129,7 +131,7 @@ export function MonsterForge({
                 </select>
               </label>
               <label>
-                Avg. level
+                {t("monster.averageLevel")}
                 <select
                   value={level}
                   onChange={(event) => setLevel(event.target.value)}
@@ -141,7 +143,7 @@ export function MonsterForge({
               </label>
             </div>
             <label>
-              Desired difficulty
+              {t("monster.difficulty")}
               <select
                 value={difficulty}
                 onChange={(event) =>
@@ -150,7 +152,9 @@ export function MonsterForge({
               >
                 {(["Easy", "Medium", "Hard", "Deadly"] as Difficulty[]).map(
                   (item) => (
-                    <option key={item}>{item}</option>
+                    <option key={item} value={item}>
+                      {t(`difficulty.${item}`)}
+                    </option>
                   ),
                 )}
               </select>
@@ -168,23 +172,23 @@ export function MonsterForge({
                 )
               }
             >
-              <Sparkles size={17} /> Forge balanced version
+              <Sparkles size={17} /> {t("monster.forge")}
             </button>
             {scaled && (
               <div className="result-card reveal">
-                <span className="eyebrow warm">YOUR VARIANT</span>
+                <span className="eyebrow warm">{t("monster.variant")}</span>
                 <h3>{scaled.name}</h3>
                 <div className="stat-strip">
                   <div>
-                    <span>HP</span>
+                    <span>{t("common.hp")}</span>
                     <strong>{scaled.hitPoints}</strong>
                   </div>
                   <div>
-                    <span>AC</span>
+                    <span>{t("common.ac")}</span>
                     <strong>{scaled.armorClass}</strong>
                   </div>
                   <div>
-                    <span>CR</span>
+                    <span>{t("monster.cr")}</span>
                     <strong>{scaled.challengeRating}</strong>
                   </div>
                 </div>
@@ -192,7 +196,7 @@ export function MonsterForge({
                   className="secondary full"
                   onClick={() => onSave(scaled)}
                 >
-                  <Download size={16} /> Save .a5e sheet
+                  <Download size={16} /> {t("npc.save")}
                 </button>
               </div>
             )}
@@ -200,8 +204,8 @@ export function MonsterForge({
         ) : (
           <EmptyPreview
             icon={<Swords />}
-            title="Select a creature"
-            text="Pick an Open5e creature to start tuning the encounter."
+            title={t("monster.emptyTitle")}
+            text={t("monster.emptyText")}
           />
         )}
       </section>

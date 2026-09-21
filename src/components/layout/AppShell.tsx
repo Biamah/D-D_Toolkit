@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NavButton } from "../ui/NavButton";
 import type { SavedSheet } from "../../types";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export type View = "dashboard" | "npc" | "monsters" | "library";
 export function AppShell({
@@ -25,14 +26,15 @@ export function AppShell({
   error: string;
   children: React.ReactNode;
 }) {
+  const { language, setLanguage, t } = useTranslation();
   const title =
     view === "dashboard"
-      ? "Shape your next story."
+      ? t("header.dashboard")
       : view === "npc"
-        ? "NPC Generator"
+        ? t("header.npc")
         : view === "monsters"
-          ? "Monster Forge"
-          : "My Library";
+          ? t("header.monsters")
+          : t("header.library");
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -42,7 +44,7 @@ export function AppShell({
           </span>
           <div>
             <strong>D&D Toolkit</strong>
-            <small>Campaign forge</small>
+            <small>{t("brand.subtitle")}</small>
           </div>
         </div>
         <nav>
@@ -51,49 +53,64 @@ export function AppShell({
             icon={<Sparkles size={17} />}
             onClick={() => setView("dashboard")}
           >
-            Overview
+            {t("nav.overview")}
           </NavButton>
           <NavButton
             active={view === "npc"}
             icon={<WandSparkles size={17} />}
             onClick={() => setView("npc")}
           >
-            NPC Generator
+            {t("nav.npc")}
           </NavButton>
           <NavButton
             active={view === "monsters"}
             icon={<Swords size={17} />}
             onClick={() => setView("monsters")}
           >
-            Monster Forge
+            {t("nav.monsters")}
           </NavButton>
           <NavButton
             active={view === "library"}
             icon={<Library size={17} />}
             onClick={() => setView("library")}
           >
-            My Library <span className="nav-count">{saved.length}</span>
+            {t("nav.library")} <span className="nav-count">{saved.length}</span>
           </NavButton>
         </nav>
         <div className="sidebar-footer">
-          <div className="online-dot" /> Open5e V2 connected
+          <div className="online-dot" /> {t("nav.open5eConnected")}
         </div>
       </aside>
       <main className="main">
         <header className="topbar">
           <div>
-            <span className="eyebrow">CAMPAIGN WORKSPACE</span>
+            <span className="eyebrow">{t("header.workspace")}</span>
             <h1>{title}</h1>
           </div>
-          <button className="icon-button" title="Ajuda">
-            <CircleHelp size={19} />
-          </button>
+          <div className="header-actions">
+            <label className="language-switcher">
+              <span>{t("language.label")}</span>
+              <select
+                aria-label={t("language.label")}
+                value={language}
+                onChange={(event) =>
+                  setLanguage(event.target.value as "en" | "pt-BR")
+                }
+              >
+                <option value="en">🇺🇸 {t("language.english")}</option>
+                <option value="pt-BR">🇧🇷 {t("language.portuguese")}</option>
+              </select>
+            </label>
+            <button className="icon-button" title={t("header.help")}>
+              <CircleHelp size={19} />
+            </button>
+          </div>
         </header>
         {error && (
           <div className="alert">
-            <X size={17} /> {error}
+            <X size={17} /> {error === "open5e" ? t("error.open5e") : error}
             <button onClick={() => location.reload()}>
-              <RefreshCw size={15} /> Retry
+              <RefreshCw size={15} /> {t("action.retry")}
             </button>
           </div>
         )}

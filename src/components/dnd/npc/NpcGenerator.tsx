@@ -3,6 +3,7 @@ import { EmptyPreview } from "../../ui/EmptyPreview";
 import { NpcCard } from "./NpcCard";
 import { useNpcGenerator } from "../../../hooks/useNpcGenerator";
 import type { Npc } from "../../../types";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export function NpcGenerator({
   species,
@@ -13,39 +14,40 @@ export function NpcGenerator({
   loading: boolean;
   onSave: (npc: Npc) => void;
 }) {
+  const { t } = useTranslation();
   const generator = useNpcGenerator(species);
   return (
     <div className="workspace-grid">
       <section className="form-panel">
         <div className="panel-heading">
           <div>
-            <span className="eyebrow">CHARACTER SEED</span>
-            <h2>Who walks into the tavern?</h2>
+            <span className="eyebrow">{t("npc.seed")}</span>
+            <h2>{t("npc.prompt")}</h2>
           </div>
-          <span className="step-badge">01 / 02</span>
+          <span className="step-badge">{t("npc.step")}</span>
         </div>
         <label>
-          Name <span>optional</span>
+          {t("npc.name")} <span>{t("npc.optional")}</span>
           <div className="input-with-action">
             <input
               value={generator.name}
               onChange={(event) => generator.setName(event.target.value)}
-              placeholder="Leave blank to roll a name"
+              placeholder={t("npc.namePlaceholder")}
             />
-            <button title="Generate random name" onClick={generator.randomName}>
+            <button title={t("npc.randomName")} onClick={generator.randomName}>
               <RefreshCw size={16} />
             </button>
           </div>
         </label>
         <label>
-          Race
+          {t("npc.race")}
           <select
             value={generator.race}
             onChange={(event) => generator.setRace(event.target.value)}
             disabled={loading}
           >
             <option value="">
-              {loading ? "Loading Open5e species..." : "Choose a species"}
+              {loading ? t("npc.loadingSpecies") : t("npc.chooseSpecies")}
             </option>
             {species.map((item) => (
               <option key={item.key} value={item.name}>
@@ -56,7 +58,7 @@ export function NpcGenerator({
         </label>
         <div className="two-col">
           <label>
-            Level
+            {t("npc.level")}
             <select
               value={generator.level}
               onChange={(event) => generator.setLevel(event.target.value)}
@@ -67,22 +69,24 @@ export function NpcGenerator({
             </select>
           </label>
           <label>
-            Role
+            {t("npc.role")}
             <select
               value={generator.role}
               onChange={(event) => generator.setRole(event.target.value)}
             >
               {generator.npcRoles.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item} value={item}>
+                  {t(`npc.roles.${item}`)}
+                </option>
               ))}
             </select>
           </label>
         </div>
         <button className="primary full" onClick={generator.generate}>
-          <Sparkles size={17} /> Generate NPC
+          <Sparkles size={17} /> {t("npc.generate")}
         </button>
         <p className="form-note">
-          <Check size={14} /> Species data is sourced from Open5e V2
+          <Check size={14} /> {t("npc.sourceNote")}
         </p>
       </section>
       {generator.npc ? (
@@ -90,8 +94,8 @@ export function NpcGenerator({
       ) : (
         <EmptyPreview
           icon={<WandSparkles />}
-          title="Your NPC will appear here"
-          text="Fill the seed form and let the story begin."
+          title={t("npc.emptyTitle")}
+          text={t("npc.emptyText")}
         />
       )}
     </div>

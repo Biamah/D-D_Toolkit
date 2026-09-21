@@ -10,6 +10,7 @@ import { QuickCard } from "../../ui/QuickCard";
 import { Stat } from "../../ui/Stat";
 import type { SavedSheet } from "../../../types";
 import type { View } from "../../layout/AppShell";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export function Dashboard({
   saved,
@@ -18,73 +19,76 @@ export function Dashboard({
   saved: SavedSheet[];
   setView: (view: View) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <section className="hero-panel">
         <div>
-          <span className="eyebrow warm">THE DM'S DESK</span>
+          <span className="eyebrow warm">{t("dashboard.eyebrow")}</span>
           <h2>
-            Build encounters
+            {t("dashboard.heroTitle")}
             <br />
-            <em>worth remembering.</em>
+            <em>{t("dashboard.heroEmphasis")}</em>
           </h2>
-          <p>
-            Shape the people and creatures that make your campaign feel alive.
-          </p>
+          <p>{t("dashboard.heroText")}</p>
           <div className="hero-actions">
             <button className="primary" onClick={() => setView("npc")}>
-              <WandSparkles size={17} /> Create an NPC
+              <WandSparkles size={17} /> {t("dashboard.createNpc")}
             </button>
             <button className="secondary" onClick={() => setView("monsters")}>
-              <Swords size={17} /> Forge a monster
+              <Swords size={17} /> {t("dashboard.forgeMonster")}
             </button>
           </div>
         </div>
         <div className="sigil">
           <span>✦</span>
           <small>
-            TOOLS FOR
+            {t("dashboard.sigil").split("|")[0]}
             <br />
-            STORYTELLERS
+            {t("dashboard.sigil").split("|")[1]}
           </small>
         </div>
       </section>
       <section className="stats-grid">
         <Stat
-          label="Saved sheets"
+          label={t("dashboard.savedSheets")}
           value={String(saved.length).padStart(2, "0")}
           icon={<BookOpen size={19} />}
         />
-        <Stat label="Open5e creatures" value="—" icon={<Swords size={19} />} />
         <Stat
-          label="Local-first"
+          label={t("dashboard.open5eCreatures")}
+          value="—"
+          icon={<Swords size={19} />}
+        />
+        <Stat
+          label={t("dashboard.localFirst")}
           value="100%"
           icon={<FolderOpen size={19} />}
         />
       </section>
       <section className="section-heading">
         <div>
-          <span className="eyebrow">QUICK START</span>
-          <h3>Choose your next move</h3>
+          <span className="eyebrow">{t("dashboard.quickStart")}</span>
+          <h3>{t("dashboard.chooseMove")}</h3>
         </div>
       </section>
       <div className="quick-grid">
         <QuickCard
           icon={<WandSparkles />}
-          title="Make an NPC"
-          text="A name, a lineage, a story hook."
+          title={t("dashboard.makeNpc")}
+          text={t("dashboard.makeNpcText")}
           onClick={() => setView("npc")}
         />
         <QuickCard
           icon={<Swords />}
-          title="Balance a monster"
-          text="Tune the threat to your table."
+          title={t("dashboard.balanceMonster")}
+          text={t("dashboard.balanceMonsterText")}
           onClick={() => setView("monsters")}
         />
         <QuickCard
           icon={<Library />}
-          title="Open your library"
-          text="Everything saved for this campaign."
+          title={t("dashboard.openLibrary")}
+          text={t("dashboard.openLibraryText")}
           onClick={() => setView("library")}
         />
       </div>
