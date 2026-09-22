@@ -7,12 +7,17 @@ import { NpcRoute } from "./routes/npc";
 import { MonstersRoute } from "./routes/monsters";
 import { LibraryRoute } from "./routes/library";
 import type { Monster, Npc } from "./types";
+import { useTranslation } from "./hooks/useTranslation";
 
 function App() {
   const [view, setView] = useState<View>("dashboard");
   const [query, setQuery] = useState("");
   const [scaled, setScaled] = useState<Monster | null>(null);
-  const { species, filteredMonsters, loading, error } = useCampaignData(query);
+  const { language } = useTranslation();
+  const { species, filteredMonsters, loading, error } = useCampaignData(
+    query,
+    language,
+  );
   const library = useLocalLibrary();
 
   const content =

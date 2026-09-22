@@ -14,6 +14,7 @@ const LanguageContext = createContext<{
   ) => string;
 }>({ language: "en", setLanguage: () => undefined, t: (key) => key });
 
+/** Fornece idioma, troca de idioma e função de tradução para a árvore da aplicação. */
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(
     () => (localStorage.getItem("dnd-toolkit-language") as Language) || "en",
@@ -49,6 +50,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     </LanguageContext.Provider>
   );
 }
+/** Retorna o contexto de internacionalização disponível no componente atual. */
 export function useTranslation() {
   return useContext(LanguageContext);
 }

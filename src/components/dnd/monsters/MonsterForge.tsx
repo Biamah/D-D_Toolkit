@@ -9,6 +9,11 @@ import {
 import { EmptyPreview } from "../../ui/EmptyPreview";
 import { characterLevels } from "../../../data/options";
 import { scaleMonster } from "../../../lib/monster/scaling";
+import {
+  formatMonsterAction,
+  formatMonsterValue,
+  hasMonsterValue,
+} from "../../../lib/monster/presentation";
 import type { Difficulty, Monster } from "../../../types";
 import { useState } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";
@@ -30,17 +35,34 @@ export function MonsterForge({
   setScaled: (monster: Monster | null) => void;
   onSave: (monster: Monster) => void;
 }) {
-  const { t } = useTranslation();
+  const { language, t } = useTranslation();
   const [selected, setSelected] = useState<Monster | null>(null);
   const [players, setPlayers] = useState("4");
   const [level, setLevel] = useState("5");
   const [difficulty, setDifficulty] = useState<Difficulty>("Hard");
+  const defenseDetails: Array<[string, unknown]> = scaled
+    ? [
+        ["monster.details.resistances", scaled.resistances],
+        ["monster.details.immunities", scaled.immunities],
+        ["monster.details.vulnerabilities", scaled.vulnerabilities],
+        ["monster.details.conditionImmunities", scaled.conditionImmunities],
+      ]
+    : [];
+  const featureDetails: Array<[string, unknown]> = scaled
+    ? [
+        ["monster.details.speed", scaled.speed],
+        ["monster.details.senses", scaled.senses],
+        ["monster.details.languages", scaled.languages],
+        ["monster.details.proficiencyBonus", scaled.proficiencyBonus],
+        ["monster.details.xp", scaled.xp],
+      ]
+    : [];
   return (
     <div className="monster-layout">
       <section className="browser-panel">
         <div className="browser-head">
           <div>
-            <span className="eyebrow">{t("monster.open5e")}</span>
+            <span className="eyebrow">{t("monster.dnd5e")}</span>
             <h2>{t("monster.chooseBase")}</h2>
           </div>
           <span className="result-count">
@@ -84,8 +106,15 @@ export function MonsterForge({
                   )}
                 </div>
                 <div>
-                  <strong>{monster.name}</strong>
+                  <strong>
+                    {language === "pt-BR"
+                      ? monster.translatedName || monster.name
+                      : monster.name}
+                  </strong>
                   <span>
+                    {language === "pt-BR" && monster.translatedName
+                      ? `${monster.name} · `
+                      : ""}
                     {monster.type} · CR {monster.challengeRating}
                   </span>
                 </div>
@@ -114,7 +143,11 @@ export function MonsterForge({
               )}
               <div>
                 <span>{t("monster.baseLabel")}</span>
-                <h3>{selected.name}</h3>
+                <h3>
+                  {language === "pt-BR"
+                    ? selected.translatedName || selected.name
+                    : selected.name}
+                </h3>
                 <p>{t("monster.originalNote")}</p>
               </div>
             </div>
@@ -191,6 +224,142 @@ export function MonsterForge({
                     <span>{t("monster.cr")}</span>
                     <strong>{scaled.challengeRating}</strong>
                   </div>
+                </div>
+                <div className="variant-details">
+                  {defenseDetails.some(([, value]) =>
+                    hasMonsterValue(value),
+                  ) ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.hitDiceSection")}</h4>
+                      {defenseDetails.map(([label, value]) =>
+                        hasMonsterValue(value) ? (
+                          <div className="variant-detail-row" key={label}>
+                            <span>{t(label)}</span>
+                            <strong>{formatMonsterValue(value)}</strong>
+                          </div>
+                        ) : null,
+                      )}
+                    </section>
+                  ) : null}
+
+                  {featureDetails.some(([, value]) =>
+                    hasMonsterValue(value),
+                  ) ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.features")}</h4>
+                      {featureDetails.map(([label, value]) =>
+                        hasMonsterValue(value) ? (
+                          <div className="variant-detail-row" key={label}>
+                            <span>{t(label)}</span>
+                            <strong>{formatMonsterValue(value)}</strong>
+                          </div>
+                        ) : null,
+                      )}
+                    </section>
+                  ) : null}
+
+                  {scaled.hitDice ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.defenses")}</h4>
+                      <div className="variant-detail-row">
+                        <span>{t("monster.details.hitDice")}</span>
+                        <strong>{scaled.hitDice}</strong>
+                      </div>
+                    </section>
+                  ) : null}
+
+                  <section className="variant-detail-section">
+                    <h4>{t("monster.details.abilities")}</h4>
+                    <div className="variant-ability-grid">
+                      {(
+                        [
+                          [
+                            "monster.details.strength",
+                            scaled.abilities.strength,
+                          ],
+                          [
+                            "monster.details.dexterity",
+                            scaled.abilities.dexterity,
+                          ],
+                          [
+                            "monster.details.constitution",
+                            scaled.abilities.constitution,
+                          ],
+                          [
+                            "monster.details.intelligence",
+                            scaled.abilities.intelligence,
+                          ],
+                          ["monster.details.wisdom", scaled.abilities.wisdom],
+                          [
+                            "monster.details.charisma",
+                            scaled.abilities.charisma,
+                          ],
+                        ] as Array<[string, number]>
+                      ).map(([label, value]) => (
+                        <div key={label}>
+                          <span>{t(label)}</span>
+                          <strong>{value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {scaled.actions?.length ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.actions")}</h4>
+                      <ul className="variant-detail-list">
+                        {scaled.actions.map((action) => (
+                          <li key={action.name}>
+                            {formatMonsterAction(action)}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {scaled.proficiencies?.length ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.proficiencies")}</h4>
+                      <ul className="variant-detail-list">
+                        {scaled.proficiencies.map((proficiency) => (
+                          <li key={proficiency.name}>
+                            <strong>{proficiency.name}</strong>
+                            <span>
+                              {t("monster.details.proficiencyValue", {
+                                value: proficiency.value,
+                              })}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {scaled.specialAbilities?.length ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.specialAbilities")}</h4>
+                      <ul className="variant-detail-list">
+                        {scaled.specialAbilities.map((ability) => (
+                          <li key={ability.name}>
+                            {formatMonsterAction(ability)}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {scaled.legendaryActions?.length ? (
+                    <section className="variant-detail-section">
+                      <h4>{t("monster.details.legendaryActions")}</h4>
+                      <ul className="variant-detail-list">
+                        {scaled.legendaryActions.map((action) => (
+                          <li key={action.name}>
+                            {formatMonsterAction(action)}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
                 </div>
                 <button
                   className="secondary full"

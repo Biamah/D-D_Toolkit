@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 
+/** Renderiza um cartão de ação rápida com ícone, título, descrição e callback de clique. */
 export function QuickCard({
   icon,
   title,

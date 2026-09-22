@@ -1,3 +1,4 @@
+/** Apresenta uma métrica com ícone, valor principal e seu respectivo rótulo. */
 export function Stat({
   label,
   value,

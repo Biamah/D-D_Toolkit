@@ -3,14 +3,19 @@ import { characterLevels, npcNames, npcRoles } from "../data/options";
 import { emptyAbilities } from "../types";
 import type { Npc } from "../types";
 
+/** Mantém os campos do NPC em edição e gera uma ficha com atributos derivados do nível. */
 export function useNpcGenerator(species: { name: string }[]) {
   const [npc, setNpc] = useState<Npc | null>(null);
   const [name, setName] = useState("");
   const [race, setRace] = useState("");
   const [level, setLevel] = useState("3");
   const [role, setRole] = useState(npcRoles[0]);
+
+  /** Escolhe um nome aleatório da lista de nomes disponíveis. */
   const randomName = () =>
     setName(npcNames[Math.floor(Math.random() * npcNames.length)]);
+
+  /** Cria um NPC usando os campos atuais e valores padrão quando necessário. */
   const generate = () => {
     const actualLevel = Number(level);
     setNpc({

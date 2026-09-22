@@ -56,7 +56,7 @@ export function Dashboard({
           icon={<BookOpen size={19} />}
         />
         <Stat
-          label={t("dashboard.open5eCreatures")}
+          label={t("dashboard.dnd5eCreatures")}
           value="—"
           icon={<Swords size={19} />}
         />

@@ -78,7 +78,7 @@ export function AppShell({
           </NavButton>
         </nav>
         <div className="sidebar-footer">
-          <div className="online-dot" /> {t("nav.open5eConnected")}
+          <div className="online-dot" /> {t("nav.dnd5eConnected")}
         </div>
       </aside>
       <main className="main">
@@ -108,7 +108,7 @@ export function AppShell({
         </header>
         {error && (
           <div className="alert">
-            <X size={17} /> {error === "open5e" ? t("error.open5e") : error}
+            <X size={17} /> {error === "dnd5e" ? t("error.dnd5e") : error}
             <button onClick={() => location.reload()}>
               <RefreshCw size={15} /> {t("action.retry")}
             </button>

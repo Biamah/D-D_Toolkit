@@ -9,21 +9,45 @@ export interface AbilityScores {
   wisdom: number;
   charisma: number;
 }
+export interface MonsterAction {
+  name: string;
+  description?: string;
+}
+export interface MonsterProficiency {
+  name: string;
+  value: number;
+}
 export interface Monster {
   id: string;
   name: string;
+  translatedName?: string;
   size: string;
   type: string;
   alignment: string;
   armorClass: number;
   hitPoints: number;
+  hitDice?: string;
   challengeRating: string;
   imageUrl?: string;
-  source: "Open5e" | "D&D Toolkit";
+  source: "D&D 5e API" | "D&D Toolkit";
   originalId?: string;
   abilities: AbilityScores;
   attacks: string[];
   description?: string;
+  speed?: Record<string, string>;
+  savingThrows?: string[];
+  proficiencies?: MonsterProficiency[];
+  resistances?: string[];
+  vulnerabilities?: string[];
+  immunities?: string[];
+  conditionImmunities?: string[];
+  senses?: Record<string, string | number>;
+  languages?: string;
+  proficiencyBonus?: number;
+  xp?: number;
+  actions?: MonsterAction[];
+  specialAbilities?: MonsterAction[];
+  legendaryActions?: MonsterAction[];
 }
 export interface Npc {
   id: string;
@@ -42,32 +66,6 @@ export interface SavedSheet {
   type: LibraryType;
   data: Npc | Monster;
   metadata: { id: string; title: string; favorite: boolean; updatedAt: string };
-}
-
-export interface CreatureApiModel {
-  key?: string;
-  name?: string;
-  size?: string | { name?: string; key?: string };
-  type?: string | { name?: string; key?: string };
-  alignment?: string;
-  armor_class?: number | string;
-  hit_points?: number;
-  challenge_rating?: string | number;
-  image?: string;
-  desc?: string;
-  strength?: number;
-  dexterity?: number;
-  constitution?: number;
-  intelligence?: number;
-  wisdom?: number;
-  charisma?: number;
-  actions?: Array<{ name?: string; desc?: string }>;
-}
-export interface ApiList<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
 }
 
 export const emptyAbilities = (): AbilityScores => ({

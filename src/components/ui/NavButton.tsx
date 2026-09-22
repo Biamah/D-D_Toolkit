@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 
+/** Renderiza um item de navegação com estado ativo, ícone e ação de seleção. */
 export function NavButton({
   active,
   icon,

@@ -1,3 +1,4 @@
+/** Exibe uma mensagem orientativa quando ainda não há conteúdo para visualizar. */
 export function EmptyPreview({
   icon,
   title,

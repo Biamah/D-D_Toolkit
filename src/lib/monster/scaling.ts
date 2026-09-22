@@ -12,14 +12,19 @@ export function scaleMonster(
   level: number,
   difficulty: Difficulty,
 ): Monster {
-  const factor =
+  const statFactor =
     difficultyFactor[difficulty] *
     (0.82 + level * 0.045) *
     (0.72 + players * 0.07);
+  const partyFactor =
+    1 + Math.max(0, players - 1) * 0.55 + Math.max(0, level - 1) * 0.1;
+  const survivabilityFactor = difficultyFactor[difficulty] * partyFactor;
+  const partyDurabilityFloor =
+    players * level * 3 * difficultyFactor[difficulty];
   const abilities = Object.fromEntries(
     Object.entries(base.abilities).map(([key, value]) => [
       key,
-      Math.min(30, Math.max(1, Math.round(value + (factor - 1) * 2))),
+      Math.min(30, Math.max(1, Math.round(value + (statFactor - 1) * 2))),
     ]),
   ) as unknown as Monster["abilities"];
   return {
@@ -28,8 +33,13 @@ export function scaleMonster(
     name: `${difficulty} ${base.name}`,
     source: "D&D Toolkit",
     originalId: base.id,
-    hitPoints: Math.max(1, Math.round(base.hitPoints * factor)),
-    armorClass: Math.max(8, Math.round(base.armorClass + (factor - 1) * 2)),
+    hitPoints: Math.max(
+      1,
+      Math.round(
+        Math.max(base.hitPoints * survivabilityFactor, partyDurabilityFloor),
+      ),
+    ),
+    armorClass: Math.max(8, Math.round(base.armorClass + (statFactor - 1) * 2)),
     challengeRating: `${base.challengeRating}*`,
     abilities,
   };
